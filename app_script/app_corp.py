@@ -271,6 +271,22 @@ def create_local_window():
 
     def second_part(username):
 
+        # def start_camera():
+        #     global cap, photo
+        #     cap = cv2.VideoCapture(CAMERA_ID)
+
+        #     def update_frame():
+        #         if cap.isOpened():
+        #             ret, frame = cap.read()
+        #             if ret:
+        #                 frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        #                 img = Image.fromarray(frame)
+
+        #                 video_frame = ctk.CTkImage(light_image=img, size=(900, 900))
+        #                 video_label.configure(image=video_frame)
+        #             video_label.after(10, update_frame)
+
+        #     update_frame()
         def start_camera():
             global cap, photo
             cap = cv2.VideoCapture(CAMERA_ID)
@@ -279,14 +295,23 @@ def create_local_window():
                 if cap.isOpened():
                     ret, frame = cap.read()
                     if ret:
+                        # Resize frame to fit the label dynamically
                         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                         img = Image.fromarray(frame)
 
-                        video_frame = ctk.CTkImage(light_image=img, size=(900, 900))
+                        # Get current size of the video_label
+                        label_width = video_label.winfo_width()
+                        label_height = video_label.winfo_height()
+
+                        # Dynamically create the CTkImage to fill the label
+                        video_frame = ctk.CTkImage(light_image=img, size=(label_width, label_height))
                         video_label.configure(image=video_frame)
+
                     video_label.after(10, update_frame)
 
+            # Ensure the update loop is started
             update_frame()
+
 
         def save_face_encodings(image, save_path, user_name):
             img = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -331,7 +356,10 @@ def create_local_window():
             elif bt_start.cget("text") == "Сделать фото":
                 capture_photo()
 
-        frame = ctk.CTkFrame(local_app, width=900, height=900, fg_color="white")
+        local_app.grid_rowconfigure(0, weight=1)
+        local_app.grid_columnconfigure(0, weight=1)
+
+        frame = ctk.CTkFrame(local_app, fg_color="white")
         frame.grid(row=0, column=0, padx=40, pady=(100, 20))
         frame.grid_propagate(False)
 
@@ -344,8 +372,6 @@ def create_local_window():
         video_label.grid(row=1, column=0, sticky="nsew", padx=10, pady=10)
 
         bt_start = ctk.CTkButton(local_app,
-                                 width=400,
-                                 height=20,
                                  text="Сканировать",
                                  command=toggle_camera_action)
         bt_start.grid(row=2, column=0, pady=50, sticky="nsew")
