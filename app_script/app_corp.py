@@ -360,12 +360,14 @@ def create_local_window():
                 capture_photo()
 
 
+        # Настройка grid и минимальных размеров
         local_app.grid_rowconfigure(0, weight=1)
         local_app.grid_columnconfigure(0, weight=1)
 
         frame = ctk.CTkFrame(local_app, fg_color="white")
         frame.grid(row=0, column=0, padx=40, pady=(100, 20))
         frame.grid_propagate(False)
+        frame.configure(width=800, height=600)  # Установка минимального размера
 
         settings_label = ctk.CTkLabel(frame,
                                       text="Нажмите на кнопку ниже",
@@ -374,6 +376,10 @@ def create_local_window():
 
         video_label = ctk.CTkLabel(frame, text="")
         video_label.grid(row=1, column=0, sticky="nsew", padx=10, pady=10)
+        video_label.configure(width=600, height=450)  # Установка начальных размеров
+
+        frame.grid_rowconfigure(1, weight=1)
+        frame.grid_columnconfigure(0, weight=1)
 
         bt_start = ctk.CTkButton(local_app,
                                  text="Сканировать",
