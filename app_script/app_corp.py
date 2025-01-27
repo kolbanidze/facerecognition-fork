@@ -295,22 +295,23 @@ def create_local_window():
                 if cap.isOpened():
                     ret, frame = cap.read()
                     if ret:
-                        # Resize frame to fit the label dynamically
+                        # Преобразование изображения для отображения
                         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                         img = Image.fromarray(frame)
 
-                        # Get current size of the video_label
-                        label_width = video_label.winfo_width()
-                        label_height = video_label.winfo_height()
+                        # Получение размеров video_label
+                        label_width = max(video_label.winfo_width(), 400)  # Минимальная ширина
+                        label_height = max(video_label.winfo_height(), 300)  # Минимальная высота
 
-                        # Dynamically create the CTkImage to fill the label
+                        # Динамическое создание изображения
                         video_frame = ctk.CTkImage(light_image=img, size=(label_width, label_height))
                         video_label.configure(image=video_frame)
 
                     video_label.after(10, update_frame)
 
-            # Ensure the update loop is started
+            # Запуск цикла обновления
             update_frame()
+
 
 
         def save_face_encodings(image, save_path, user_name):
@@ -351,10 +352,13 @@ def create_local_window():
 
         def toggle_camera_action():
             if bt_start.cget("text") == "Сканировать":
+                # Настройка размеров перед запуском камеры
+                video_label.configure(width=600, height=450)  # Начальные размеры
                 start_camera()
                 bt_start.configure(text="Сделать фото", command=capture_photo)
             elif bt_start.cget("text") == "Сделать фото":
                 capture_photo()
+
 
         local_app.grid_rowconfigure(0, weight=1)
         local_app.grid_columnconfigure(0, weight=1)
@@ -375,6 +379,8 @@ def create_local_window():
                                  text="Сканировать",
                                  command=toggle_camera_action)
         bt_start.grid(row=2, column=0, pady=50, sticky="nsew")
+
+
 
 
 def create_corporate_window():
